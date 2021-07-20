@@ -1,0 +1,6 @@
+*/venv/
+*/.idea/
+*/project/
+*/__pycache__/
+*.exe
+*data*.db
