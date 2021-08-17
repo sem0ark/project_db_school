@@ -228,6 +228,26 @@ class DataBase:
 
         self.db.commit()
 
+    def delete_reader(self, readerId):
+        self.c.execute("""
+            DELETE FROM reader
+            WHERE id=:reader_id
+        """, {
+            'reader_id': readerId,
+        })
+
+        self.db.commit()
+
+    def delete_reader_history(self, readerId):
+        self.c.execute("""
+            DELETE FROM takeout
+            WHERE readerId=:reader_id
+        """, {
+            'reader_id': readerId,
+        })
+
+        self.db.commit()
+
     def register_author(self, name):
         self.c.execute("""
             INSERT INTO author (name)
@@ -264,6 +284,21 @@ class DataBase:
         self.c.execute("""
             DELETE FROM book_exemplar
             WHERE exemplarId = :exemplar_id
+        """,
+        {
+            'exemplar_id': exemplarId,
+        })
+
+        self.db.commit()
+
+    def delete_exemplar_history(self, exemplarId):
+        """
+        Removes all history records with that exemplar ID.
+        """
+
+        self.c.execute("""
+            DELETE FROM takeout
+            WHERE bookExemplarId = :exemplar_id
         """,
         {
             'exemplar_id': exemplarId,
@@ -475,6 +510,22 @@ class DataBase:
         exemplars = self.get_exemplar_list_raw(bookId)
         for i in exemplars:
             self.delete_exemplar(i)
+
+    def delete_exemplar_deep(self, exemplarId):
+        """
+        Removes exemplar and all it's history/take out records.
+        """
+        
+        self.delete_exemplar(exemplarId)
+        self.delete_exemplar_history(bookId)
+
+    def delete_reader_deep(self, readerId):
+        """
+        Removes reader and all it's history records.
+        """
+        
+        self.delete_reader(readerId)
+        self.delete_reader_history(readerId)
 
     def add_time_to_takeout(self, bookExemplarId, addTime):
         self.c.execute("""
