@@ -4,6 +4,7 @@ import sqlite3 as sq
 class DataBase:
     """
     Main class of database operations
+    Based on sqlite3
     """
 
     def __init__(self):
@@ -891,6 +892,9 @@ class DataBase:
                             FROM book_exemplar
                         """)
         return self.c.fetchall()
+
+    def get_last_id(self):
+        return self.c.lastrowid
 
     def close(self):
         self.db.close()

@@ -32,7 +32,7 @@ class tag_Ui_MainWindow(ui_main.Ui_MainWindow):
         font = QtGui.QFont()
         font.setPointSize(9)
         self.table.setFont(font)
-        self.table.setModel(self.create_table_model([('sss','aaaa','sss','ddd')], ('1','Вилки','3','4')))
+        self.table.setModel(self.create_table_model([], tuple()))
         self.verticalLayout_2.addWidget(self.table)        
         self.pr = process()
 
@@ -182,7 +182,7 @@ class tag_Ui_MainWindow(ui_main.Ui_MainWindow):
                 self.illegal_input_info('ID книги')
                 return None
 
-            exemplarID = Validate_process.val_integer(exemplarID)
+            exemplarID = Validate_process.val_integer_no_text(exemplarID)
             if exemplarID == -1:
                 self.illegal_input_info('ID экземпляра')
                 return None

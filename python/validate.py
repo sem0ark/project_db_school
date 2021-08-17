@@ -33,7 +33,7 @@ class Validate_process(object):
     @staticmethod
     def val_no_text(text):
         t = Validate_process.strip_text(text)
-        if t == '':
+        if not t:
             return None
         return text
 

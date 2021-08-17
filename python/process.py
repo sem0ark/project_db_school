@@ -7,7 +7,7 @@ class Process_signal(object):
     def register_user(self, fName, sName, pName):
         self.db.register_reader(fName, sName, pName)
         # return self.db.find_last_reader(fName, sName, pName)
-        return self.db.c.lastrowid
+        return self.db.get_last_id()
 
     def register_book(
                     self, name, year, publisher_name,
@@ -17,12 +17,12 @@ class Process_signal(object):
                     publisher_town, pages, subject,
                     genres, authors, UDK, BBK, ISBN, authorMark)
         # return self.db.c.find_book(name, year, pages, UDK, BBK, ISBN, authorMark)
-        return self.db.c.lastrowid
+        return self.db.get_last_id()
 
     def register_exemplar(self, bookId, exemplarId):
         self.db.register_exemplar(bookId, exemplarId)
         # return self.db.find_last_exemplar(bookId)
-        return self.db.c.lastrowid
+        return self.db.get_last_id()
 
     def give_book(self, userId, exemplarID, givenTime):
         self.db.give_book(userId, exemplarID, givenTime)
