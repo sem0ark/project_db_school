@@ -2,5 +2,7 @@
 */.idea/
 */project/
 */__pycache__/
+*__pycache__
 *.exe
 *data*.db
+*.pyc
