@@ -19,6 +19,15 @@ class Process_signal(object):
         # return self.db.c.find_book(name, year, pages, UDK, BBK, ISBN, authorMark)
         return self.db.get_last_id()
 
+    def delete_book(self, bookId):
+        self.db.delete_book_deep(bookId)
+
+    def delete_exemplar(self, exemplarId):
+        self.db.delete_exemplar_deep(exemplarId)
+
+    def delete_reader(self, readerId):
+        self.db.delete_reader_deep(readerId)
+
     def register_exemplar(self, bookId, exemplarId):
         self.db.register_exemplar(bookId, exemplarId)
         # return self.db.find_last_exemplar(bookId)
