@@ -6,3 +6,4 @@
 *.exe
 *data*.db
 *.pyc
+*.xlsx
