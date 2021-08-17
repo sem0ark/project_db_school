@@ -170,6 +170,52 @@ class DataBase:
 
         self.db.commit()
 
+    def delete_book(self, bookId):
+        """
+        Remove all books with current ID.
+        Don't remove that one's exeplars or aithors etc.
+        """
+
+        self.c.execute("""
+            DELETE FROM book
+            WHERE id = :book_id;
+        """,
+        {
+            'book_id': bookId,
+        })
+
+        self.db.commit()
+
+    def delete_book_author(self, bookId):
+        """
+        Removes all book-author rows with that book ID.
+        """
+
+        self.c.execute("""
+            DELETE FROM author_book
+            WHERE bookId = :book_id
+        """,
+        {
+            'book_id': bookId,
+        })
+
+        self.db.commit()
+
+    def delete_book_genre(self, bookId):
+        """
+        Removes all book-author rows with that book ID.
+        """
+
+        self.c.execute("""
+            DELETE FROM genre_book
+            WHERE bookId = :book_id
+        """,
+        {
+            'book_id': bookId,
+        })
+
+        self.db.commit()
+
     def register_reader(self, fName, sName, pName):
         self.c.execute("""
             INSERT INTO reader (fName, sName, pName, registrationDate)
@@ -206,6 +252,21 @@ class DataBase:
             'bookId': bookId,
             'exemplarId': exemplarId,
             'last_id': self.find_last_exemplar_ins()
+        })
+
+        self.db.commit()
+
+    def delete_exemplar(self, exemplarId):
+        """
+        Removes all exemplars with that ID.
+        """
+
+        self.c.execute("""
+            DELETE FROM book_exemplar
+            WHERE exemplarId = :exemplar_id
+        """,
+        {
+            'exemplar_id': exemplarId,
         })
 
         self.db.commit()
@@ -399,9 +460,21 @@ class DataBase:
 
         self.register_book(name, year, publisherId[0], pages, subjectId[0], UDK, BBK, ISBN, authorMark)
         # bookId = self.find_book(name, year, pages, UDK, BBK, ISBN, authorMark)
-        bookId = self.c.lastrowid
+        bookId = self.get_last_id()
         self.weld_author_book(authorsId, bookId)
         self.weld_genre_book(genresId, bookId)
+
+    def delete_book_deep(self, bookId):
+        """
+        Removes book and all it's exemplars.
+        """
+        
+        self.delete_book(bookId)
+        self.delete_book_author(bookId)
+
+        exemplars = self.get_exemplar_list_raw(bookId)
+        for i in exemplars:
+            self.delete_exemplar(i)
 
     def add_time_to_takeout(self, bookExemplarId, addTime):
         self.c.execute("""
@@ -811,6 +884,20 @@ class DataBase:
         tagAsc = ascTag[tagAsc]
 
         return tagSort, tagAsc
+
+    def get_exemplar_list_raw(self, bookId):
+        self.c.execute("""
+                SELECT exemplarId
+                FROM book_exemplar
+                WHERE bookId = :bookId
+            """, {'bookId': bookId})
+
+        exemplars = []
+
+        for i in self.c.fetchall():
+            exemplars.append(str(i[0]))
+
+        return exemplars
 
     def get_exemplar_list(self, tagSort, tagAsc):
         tagSort, tagAsc = self.get_exemplar_list_tag_process(tagSort, tagAsc)
