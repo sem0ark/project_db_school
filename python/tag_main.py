@@ -4,16 +4,16 @@ import sys
 from process import Process_signal
 from validate import Validate_process
 # sys.path.append('./ui/version_1_tagged/ui_2/')
-import ui_main_11           as ui_main
-import ui_reg_user_3       as ui_reg_user
-import ui_reg_book_3       as ui_reg_book
-import ui_give_book_3      as ui_give_book
-import ui_take_book_4      as ui_take_book
-import ui_reg_exemplar_5   as ui_reg_exemplar
-import ui_user_info_4      as ui_user_info
-import ui_book_info_6      as ui_book_info
-import ui_exemplar_info_4   as ui_exemplar_info
-import ui_add_time_3   as ui_add_time
+import UI.ui_main_11           as ui_main
+import UI.ui_reg_user_3       as ui_reg_user
+import UI.ui_reg_book_3       as ui_reg_book
+import UI.ui_give_book_3      as ui_give_book
+import UI.ui_take_book_4      as ui_take_book
+import UI.ui_reg_exemplar_5   as ui_reg_exemplar
+import UI.ui_user_info_4      as ui_user_info
+import UI.ui_book_info_6      as ui_book_info
+import UI.ui_exemplar_info_4   as ui_exemplar_info
+import UI.ui_add_time_3   as ui_add_time
 
 
 class tag_Ui_MainWindow(ui_main.Ui_MainWindow):
