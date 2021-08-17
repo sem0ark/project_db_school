@@ -801,7 +801,7 @@ class DataBase:
         tagSearch = searchTag[tagSearch]
         tagSort = sortTag[tagSort]
         tagAsc = ascTag[tagAsc]
-        print(tagSearch, tagSort, tagAsc)
+        #print(tagSearch, tagSort, tagAsc)
 
         return tagSearch, tagSort, tagAsc
 

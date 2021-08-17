@@ -4,7 +4,7 @@ import sys
 from process import Process_signal
 from validate import Validate_process
 # sys.path.append('./ui/version_1_tagged/ui_2/')
-import ui_main_10           as ui_main
+import ui_main_11           as ui_main
 import ui_reg_user_3       as ui_reg_user
 import ui_reg_book_3       as ui_reg_book
 import ui_give_book_3      as ui_give_book
@@ -56,6 +56,9 @@ class tag_Ui_MainWindow(ui_main.Ui_MainWindow):
         self.exemplarInfoAction.triggered.connect(self.handle_exemplarInfoAction)
         self.addTimeAction.triggered.connect(self.handle_addTimeAction)
         self.exemplarListAction.triggered.connect(self.handle_exemplarListAction)
+        self.deleteExemplarAction.triggered.connect(self.handle_deleteExemplarAction)
+        self.deleteUserAction.triggered.connect(self.handle_deleteUserAction)
+        self.deleteBookAction.triggered.connect(self.handle_deleteBookAction)
 
         # init standart screen
         self.handle_alfabeticalNameListAction()
@@ -485,6 +488,27 @@ class tag_Ui_MainWindow(ui_main.Ui_MainWindow):
         ui.setupUi(UserInfo)
         UserInfo.show()
         UserInfo.exec_()
+        return None
+
+    def handle_deleteExemplarAction(self):
+        exemplarID = self.integer_input('ID', 'Введите ID экземпляра: ')
+        if exemplarID is None:
+            return None
+        self.pr.delete_exemplar(exemplarID)
+        return None
+
+    def handle_deleteUserAction(self):
+        userID = self.integer_input('ID', 'Введите ID пользователя: ')
+        if userID is None:
+            return None
+        self.pr.delete_user(userID)
+        return None
+
+    def handle_deleteBookAction(self):
+        bookID = self.integer_input('ID', 'Введите ID книги: ')
+        if bookID is None:
+            return None
+        self.pr.delete_book(bookID)
         return None
 
     def handle_bookInfoAction(self):

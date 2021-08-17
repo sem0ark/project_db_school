@@ -25,7 +25,7 @@ class Process_signal(object):
     def delete_exemplar(self, exemplarId):
         self.db.delete_exemplar_deep(exemplarId)
 
-    def delete_reader(self, readerId):
+    def delete_user(self, readerId):
         self.db.delete_reader_deep(readerId)
 
     def register_exemplar(self, bookId, exemplarId):
