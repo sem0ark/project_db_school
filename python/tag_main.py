@@ -4,7 +4,7 @@ import sys
 from process import Process_signal
 from validate import Validate_process
 # sys.path.append('./ui/version_1_tagged/ui_2/')
-import UI.ui_main_11           as ui_main
+import UI.ui_main_12           as ui_main
 import UI.ui_reg_user_3       as ui_reg_user
 import UI.ui_reg_book_3       as ui_reg_book
 import UI.ui_give_book_3      as ui_give_book
@@ -32,7 +32,7 @@ class tag_Ui_MainWindow(ui_main.Ui_MainWindow):
         font = QtGui.QFont()
         font.setPointSize(9)
         self.table.setFont(font)
-        self.table.setModel(self.create_table_model([], tuple()))
+        self.table.setModel(self.create_table_model())
         self.verticalLayout_2.addWidget(self.table)        
         self.pr = process()
 
@@ -59,6 +59,8 @@ class tag_Ui_MainWindow(ui_main.Ui_MainWindow):
         self.deleteExemplarAction.triggered.connect(self.handle_deleteExemplarAction)
         self.deleteUserAction.triggered.connect(self.handle_deleteUserAction)
         self.deleteBookAction.triggered.connect(self.handle_deleteBookAction)
+        self.exportBooksAction.triggered.connect(self.handle_exportBooksAction)
+        self.exportUsersAction.triggered.connect(self.handle_exportUsersAction)
 
         # init standart screen
         self.handle_alfabeticalNameListAction()
@@ -67,7 +69,7 @@ class tag_Ui_MainWindow(ui_main.Ui_MainWindow):
         m = self.create_table_model(info, head)
         self.table.setModel(m)
 
-    def create_table_model(self, data, head):
+    def create_table_model(self, data=[], head=tuple()):
         return TableModel(data, head)
 
     def handle_registerBookAction(self):
@@ -548,6 +550,12 @@ class tag_Ui_MainWindow(ui_main.Ui_MainWindow):
         ExemplarInfo.exec_()
         return None
 
+    def handle_exportBooksAction(self):
+        self.pr.export_books()
+
+    def handle_exportUsersAction(self):
+        self.pr.export_users()
+
     def null_search(self):
         pass
 
@@ -925,7 +933,7 @@ class Ui_ExemplarInfo_tagged(ui_exemplar_info.Ui_ExemplarInfo):
 
 
 class TableModel(QtCore.QAbstractTableModel):
-    def __init__(self, data, head):
+    def __init__(self, data=[], head=tuple()):
         super(TableModel, self).__init__()
         self._data = data
         self._head = head

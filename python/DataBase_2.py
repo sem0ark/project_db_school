@@ -1,4 +1,5 @@
 import sqlite3 as sq
+import openpyxl as px
 
 
 class DataBase:
@@ -1054,8 +1055,85 @@ class DataBase:
         self.c.execute("DROP TABLE IF EXISTS book")
         self.db.commit()
 
+    def export_books(self):
+        self.c.execute("""
+            SELECT id
+            FROM book
+            """)
+
+        wb = px.Workbook()
+        ws = wb.active
+
+        ws.append([
+            'id',
+            'year',
+            'name',
+            'publisher',
+            'pages',
+            'subject',
+            'UDK',
+            'BBK',
+            'ISBN',
+            'authorMark',
+            'genres',
+            'authors',
+        ])
+
+
+        for (i,) in self.c.fetchall():
+            info = self.get_book_info(i)
+            ws.append([
+                info['id'],
+                info['year'],
+                info['name'],
+                '; г. '.join(info['publisher']),
+                info['pages'],
+                info['subject'],
+                info['UDK'],
+                info['BBK'],
+                info['ISBN'],
+                info['authorMark'],
+                '; '.join(info['genres']),
+                '; '.join(info['authors']),
+            ])
+
+        wb.save('books.xlsx')
+
+    def export_readers(self):
+        self.c.execute("""
+            SELECT id
+            FROM reader
+            """)
+
+        wb = px.Workbook()
+        ws = wb.active
+
+        ws.append([
+            'id',
+            'fName',
+            'sName',
+            'pName',
+            'regDate',
+        ])
+
+
+        for (i,) in self.c.fetchall():
+            info = self.get_user_info(i)
+            ws.append([
+                info['id'],
+                info['fName'],
+                info['sName'],
+                info['pName'],
+                info['regDate'],
+            ])
+
+        wb.save('readers.xlsx')
+
 if __name__ == '__main__':
     test = DataBase()
+    # test.export_books()
+    # test.export_readers()
+
     # test.register_reader('A', 'S', 'D')
     # test.wipe_all()
     # test.register_genre('physics')
