@@ -888,7 +888,9 @@ class Ui_BookInfo_tagged(ui_book_info.Ui_BookInfo):
         self.bookUDK.setText(_translate("BookInfo", self.info['UDK']))
         self.bookID.setText(_translate("BookInfo", str(self.info['id'])))
         self.bookAuthor.setText(_translate("BookInfo", ' ,'.join(auth)))
-        self.exemplarList.setText(_translate("BookInfo", " , ".join(self.info['exemplars'])))
+        self.exemplarList.setText(_translate("BookInfo", " , ".join(self.info['exemplars']) +
+                f"\n Всего : {len(self.info['exemplars'])}; Выдано : {len(self.info['givenExemplars'])}; Не выдано : {len(self.info['exemplars']) - len(self.info['givenExemplars'])}"))
+
 
 class Ui_UserInfo_tagged(ui_user_info.Ui_UserInfo):
     def __init__(self, info):
