@@ -28,6 +28,9 @@ class Process_signal(object):
                                 genres, authors, UDK, BBK, ISBN, authorMark)
         return bookId
 
+    def update_user(self, readerId, fName, sName, pName):
+        self.pr.update_reader(readerId, fName, sName, pName)
+
     def delete_book(self, bookId):
         self.db.delete_book_deep(bookId)
 
@@ -58,7 +61,7 @@ class Process_signal(object):
         return self.db.get_exemplar_info(exemplarID)
 
     def get_user_info(self, userId):
-        return self.db.get_user_info(userId)
+        return self.db.get_reader_info(userId)
 
     def get_alf_name_list(self, text, tagSearch, tagSort, tagAsc): # process search query
         return self.db.get_book_alf_name(text, tagSearch, tagSort, tagAsc)

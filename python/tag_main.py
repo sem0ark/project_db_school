@@ -4,8 +4,9 @@ import sys
 from process import Process_signal
 from validate import Validate_process
 # sys.path.append('./ui/version_1_tagged/ui_2/')
-import UI.ui_main_12           as ui_main
+import UI.ui_main_13           as ui_main
 import UI.ui_reg_user_3       as ui_reg_user
+import UI.ui_upd_user_1       as ui_upd_user
 import UI.ui_reg_book_3       as ui_reg_book
 import UI.ui_upd_book_1       as ui_upd_book
 import UI.ui_give_book_3      as ui_give_book
@@ -62,6 +63,8 @@ class tag_Ui_MainWindow(ui_main.Ui_MainWindow):
         self.deleteBookAction.triggered.connect(self.handle_deleteBookAction)
         self.exportBooksAction.triggered.connect(self.handle_exportBooksAction)
         self.exportUsersAction.triggered.connect(self.handle_exportUsersAction)
+        self.updateBookAction.triggered.connect(self.handle_updateBookAction)
+        self.updateUserAction.triggered.connect(self.handle_updateUserAction)
 
         # init standart screen
         self.handle_alfabeticalNameListAction()
@@ -134,9 +137,30 @@ class tag_Ui_MainWindow(ui_main.Ui_MainWindow):
             return None
 
     def handle_updateBookAction(self):
+        bookID = self.integer_input('ID', 'Введите ID книги: ')
+        if bookID is None:
+            return None
+
+        info = self.pr.get_book_info(bookID)
+
+        info_name = info['name']
+        info_year = info['year']
+        info_publisher_name = info['publisher'][0]
+        info_publisher_town = info['publisher'][1]
+        info_pages = info['pages']
+        info_subject = info['subject']
+        info_genres = info['genres']
+        info_authors = info['authors']
+        info_UDK = info['UDK']
+        info_BBK = info['BBK']
+        info_ISBN = info['ISBN']
+        info_authorMark = info['authorMark']
+
         RegisterBook = QtWidgets.QDialog()
         ui = ui_reg_book.Ui_RegisterBook()
-        ui.setupUi(RegisterBook)
+        ui.setupUi(RegisterBook,
+                info_name, info_year, info_publisher_name, info_publisher_town, info_pages, info_subject,
+                info_genres, info_authors, info_UDK, info_BBK, info_ISBN, info_authorMark)
         RegisterBook.show()
 
         if RegisterBook.exec_() == RegisterBook.Accepted:
@@ -184,10 +208,10 @@ class tag_Ui_MainWindow(ui_main.Ui_MainWindow):
                 self.illegal_input_info('кол-во страниц')
                 return None
 
-            reg_id = self.pr.register_book(name, year, publisher_name,
+            reg_id = self.pr.update_book(bookID, name, year, publisher_name,
                                         publisher_town, pages, subject,
                                         genres, authors, UDK, BBK, ISBN, authorMark)
-            self.reg_id_info('книга', reg_id)
+            self.upd_id_info('книга', bookID)
 
             self.handle_alfabeticalNameListAction()
             self.name_search()
@@ -229,6 +253,40 @@ class tag_Ui_MainWindow(ui_main.Ui_MainWindow):
         else:
             return None
 
+    def handle_updateUserAction(self):
+        userID = self.integer_input('ID', 'Введите ID ползователя: ')
+
+        RegisterReader = QtWidgets.QDialog()
+        ui = ui_upd_user.Ui_UpdateReader()
+        ui.setupUi(UpdateReader)
+        RegisterReader.show()
+        if RegisterReader.exec_() == RegisterReader.Accepted:
+            fName = ui.lineEdit_fName.text()
+            sName = ui.lineEdit_sName.text()
+            pName = ui.lineEdit_pName.text()
+
+            fName = Validate_process.val_strip_cap_text(fName)
+            sName = Validate_process.val_strip_cap_text(sName)
+            pName = Validate_process.val_strip_cap_text(pName)
+
+            fName = Validate_process.val_no_text(fName)
+            if fName is None:
+                self.illegal_input_info('Имя')
+                return None
+
+            sName = Validate_process.val_no_text(sName)
+            if sName is None:
+                self.illegal_input_info('Фамилия')
+                return None
+
+
+            self.pr.update_user(userID, fName, sName, pName)
+            self.upd_id_info('пользователь', userID)
+
+            self.handle_userListAction()
+            self.user_search()
+        else:
+            return None
 
     def handle_registerExemplarAction(self):
         # self.reconnect(self.searchButton.clicked, self.null_search)
@@ -466,7 +524,6 @@ class tag_Ui_MainWindow(ui_main.Ui_MainWindow):
 
     def handle_subjectListAction(self):
         _translate = QtCore.QCoreApplication.translate
-        #print('handle_subjectListAction triggered')
         self.reconnect(self.searchButton.clicked, self.genre_search)
         self.reconnect(self.comboBoxSearchIn.currentIndexChanged, self.genre_search)
         self.reconnect(self.comboBoxOrderBy.currentIndexChanged, self.genre_search)
@@ -883,6 +940,15 @@ class tag_Ui_MainWindow(ui_main.Ui_MainWindow):
         msgBox.setIcon(QtWidgets.QMessageBox.Information)
         msgBox.setText(name.capitalize() + ' зарег. на ID: ' + str(i))
         msgBox.setWindowTitle('Зарег.')
+        msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+        msgBox.exec_()
+
+    def upd_id_info(self, name, i):
+        window = QtWidgets.QWidget()
+        msgBox = QtWidgets.QMessageBox()
+        msgBox.setIcon(QtWidgets.QMessageBox.Information)
+        msgBox.setText(name.capitalize() + ' c ID: ' + str(i) + 'обнов.')
+        msgBox.setWindowTitle('Обновление успешно')
         msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
         msgBox.exec_()
 

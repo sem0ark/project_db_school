@@ -258,6 +258,24 @@ class DataBase:
 
         self.db.commit()
 
+    def update_reader(self, readerId, fName, sName, pName):
+        self.c.execute("""
+            UPDATE reader
+            SET
+                fName = :fName,
+                sName = :sName,
+                pName = :pName
+            WHERE
+                id = :readerId
+        """, {
+            'fName': fName,
+            'sName': sName,
+            'pName': pName,
+            'readerId': readerId,
+        })
+
+        self.db.commit()
+
     def delete_reader(self, readerId):
         self.c.execute("""
             DELETE FROM reader
@@ -737,11 +755,11 @@ class DataBase:
 
         return answer
 
-    def get_user_info(self, userId):
+    def get_reader_info(self, readerId):
         self.c.execute("""
                 SELECT * FROM reader
-                WHERE id = :userId
-            """, {'userId': userId})
+                WHERE id = :readerId
+            """, {'readerId': readerId})
         a = self.c.fetchone()
         if a is None:
             return None
@@ -760,9 +778,9 @@ class DataBase:
                 FROM takeout
                 WHERE
                     endDate IS NULL AND
-                    readerId = :userId AND
+                    readerId = :readerId AND
                     julianday('now') < beginDate + givenTime
-            """, {'userId': userId})
+            """, {'readerId': readerId})
         answer['readingNormal'] = self.c.fetchall()
 
         self.c.execute("""
@@ -770,9 +788,9 @@ class DataBase:
                 FROM takeout
                 WHERE
                     endDate IS NULL AND
-                    readerId = :userId AND
+                    readerId = :readerId AND
                     julianday('now') >= beginDate + givenTime
-            """, {'userId': userId})
+            """, {'readerId': readerId})
 
         answer['readingTimeOut'] = self.c.fetchall()
         return answer
