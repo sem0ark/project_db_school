@@ -39,15 +39,11 @@ class tag_Ui_MainWindow(ui_main.Ui_MainWindow):
         self.pr = process()
 
     def tag_all(self):
-        # self.registerAuthorAction.triggered.connect(self.handle_registerAuthorAction)
         self.registerBookAction.triggered.connect(self.handle_registerBookAction)
         self.registerUserAction.triggered.connect(self.handle_registerUserAction)
-        # self.registerPublisherAction.triggered.connect(self.handle_registerPublisherAction)
         self.registerExemplarAction.triggered.connect(self.handle_registerExemplarAction)
-        # self.registerGenreAction.triggered.connect(self.handle_registerGenreAction)
         self.giveBookAction.triggered.connect(self.handle_giveBookAction)
         self.takeBookAction.triggered.connect(self.handle_takeBookAction)
-        # self.bookExemplarsAction.triggered.connect(self.handle_bookExemplarsAction)
         self.alfabeticalNameListAction.triggered.connect(self.handle_alfabeticalNameListAction)
         self.alfabeticalAuthorListAction.triggered.connect(self.handle_alfabeticalAuthorListAction)
         self.subjectListAction.triggered.connect(self.handle_subjectListAction)
@@ -217,10 +213,8 @@ class tag_Ui_MainWindow(ui_main.Ui_MainWindow):
             self.name_search()
         else:
             return None
-    
+
     def handle_registerUserAction(self):
-        # self.reconnect(self.searchButton.clicked, self.null_search)
-        #print('handle_registerUserAction triggered')
         RegisterReader = QtWidgets.QDialog()
         ui = ui_reg_user.Ui_RegisterReader()
         ui.setupUi(RegisterReader)
@@ -255,12 +249,30 @@ class tag_Ui_MainWindow(ui_main.Ui_MainWindow):
 
     def handle_updateUserAction(self):
         userID = self.integer_input('ID', 'Введите ID ползователя: ')
+        if userID is None:
+            return None
 
-        RegisterReader = QtWidgets.QDialog()
+        answer = {
+            'id': a[0],
+            'fName': a[1],
+            'sName': a[2],
+            'pName': a[3],
+            'regDate': a[4],
+            'readingNormal': [],
+            'readingTimeOut': []
+        }
+
+        info = self.pr.get_book_info(bookID)
+
+        info_fName = info['fName']
+        info_sName = info['sName']
+        info_pName = info['pName']
+        
+        UpdateReader = QtWidgets.QDialog()
         ui = ui_upd_user.Ui_UpdateReader()
         ui.setupUi(UpdateReader)
-        RegisterReader.show()
-        if RegisterReader.exec_() == RegisterReader.Accepted:
+        UpdateReader.show()
+        if UpdateReader.exec_() == UpdateReader.Accepted:
             fName = ui.lineEdit_fName.text()
             sName = ui.lineEdit_sName.text()
             pName = ui.lineEdit_pName.text()

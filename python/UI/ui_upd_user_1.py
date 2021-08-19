@@ -12,7 +12,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class Ui_UpdateReader(object):
-    def setupUi(self, UpdateReader):
+    def setupUi(self, UpdateReader, fName, sName, pName):
         UpdateReader.setObjectName("UpdateReader")
         UpdateReader.resize(600, 194)
         font = QtGui.QFont()
@@ -35,7 +35,7 @@ class Ui_UpdateReader(object):
         self.surname.setFont(font)
         self.surname.setObjectName("surname")
         self.horizontalLayout_5.addWidget(self.surname)
-        self.lineEdit_sName = QtWidgets.QLineEdit(UpdateReader)
+        self.lineEdit_sName = QtWidgets.QLineEdit(sName, UpdateReader)
         self.lineEdit_sName.setObjectName("lineEdit_sName")
         self.horizontalLayout_5.addWidget(self.lineEdit_sName)
         self.verticalLayout_3.addLayout(self.horizontalLayout_5)
@@ -49,7 +49,7 @@ class Ui_UpdateReader(object):
         self.first_name.setFont(font)
         self.first_name.setObjectName("first_name")
         self.horizontalLayout_4.addWidget(self.first_name)
-        self.lineEdit_fName = QtWidgets.QLineEdit(UpdateReader)
+        self.lineEdit_fName = QtWidgets.QLineEdit(fName, UpdateReader)
         self.lineEdit_fName.setObjectName("lineEdit_fName")
         self.horizontalLayout_4.addWidget(self.lineEdit_fName)
         self.verticalLayout_3.addLayout(self.horizontalLayout_4)
@@ -63,7 +63,7 @@ class Ui_UpdateReader(object):
         self.p_name.setFont(font)
         self.p_name.setObjectName("p_name")
         self.horizontalLayout_6.addWidget(self.p_name)
-        self.lineEdit_pName = QtWidgets.QLineEdit(UpdateReader)
+        self.lineEdit_pName = QtWidgets.QLineEdit(pName, UpdateReader)
         self.lineEdit_pName.setObjectName("lineEdit_pName")
         self.horizontalLayout_6.addWidget(self.lineEdit_pName)
         self.verticalLayout_3.addLayout(self.horizontalLayout_6)
@@ -99,6 +99,6 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     UpdateReader = QtWidgets.QDialog()
     ui = Ui_UpdateReader()
-    ui.setupUi(UpdateReader)
+    ui.setupUi(UpdateReader, 'A', 'S', 'D')
     UpdateReader.show()
     sys.exit(app.exec_())
