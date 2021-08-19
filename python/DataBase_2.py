@@ -171,6 +171,35 @@ class DataBase:
 
         self.db.commit()
 
+    def update_book(self, bookId, name, year, publisherId, pages, subjectId, UDK, BBK, ISBN, authorMark):
+        self.c.execute("""
+            UPDATE book
+            SET name = :name,
+                year = :year,
+                publisherId = :publisherId,
+                pages = :pages,
+                subjectId = :subjectId,
+                UDK = :UDK,
+                BBK = :BBK,
+                ISBN = :ISBN,
+                authorMark = :authorMark
+            WHERE
+                id = :bookId
+        """, {
+            'bookId': bookId,
+            'name': name,
+            'year': year,
+            'publisherId': publisherId,
+            'pages': pages,
+            'subjectId': subjectId,
+            'UDK': UDK,
+            'BBK': BBK,
+            'ISBN': ISBN,
+            'authorMark': authorMark
+        })
+
+        self.db.commit()
+
     def delete_book(self, bookId):
         """
         Remove all books with current ID.
@@ -458,12 +487,6 @@ class DataBase:
             self.register_publisher(publisher_name, publisher_town)
             publisherId = self.find_publisher(publisher_name, publisher_town)
 
-        # genreId = self.find_genre(genre_name)
-        # if genreId is None:
-            # print(f'Genre {genre_name} was not found, registered new one...')
-        #     self.register_genre(genre_name)
-        #     genreId = self.find_genre(genre_name)
-
         if authors is None:
             authorsId = [None]
         else:
@@ -499,6 +522,85 @@ class DataBase:
         bookId = self.get_last_id()
         self.weld_author_book(authorsId, bookId)
         self.weld_genre_book(genresId, bookId)
+    
+    def filter_book_new_genres(self, bookId, genresId):
+        not_added = []
+        for genreId in genresId:
+            self.c.execute("""
+                    SELECT genreId FROM genre_book
+                    WHERE
+                        genreId = :genreId AND
+                        bookId = :bookId
+                """, {
+                    'bookId': bookId,
+                    'genreId': genreId,
+                })
+            if self.c.fetchone() is None:
+                not_added.append(genreId)
+        return not_added
+
+    def filter_book_new_authors(self, bookId, authorsId):
+        not_added = []
+        for authorId in authorsId:
+            self.c.execute("""
+                    SELECT authorId FROM author_book
+                    WHERE
+                        authorId = :authorId AND
+                        bookId = :bookId
+                """, {
+                    'bookId': bookId,
+                    'authorId': authorId,
+                })
+            if self.c.fetchone() is None:
+                not_added.append(authorId)
+        return not_added
+
+    def update_book_full(self, bookId, name, year, publisher_name,
+                        publisher_town, pages, subject, genres,
+                        authors, UDK, BBK, ISBN, authorMark):
+
+        publisherId = self.find_publisher(publisher_name, publisher_town)
+        if publisherId is None:
+            print(f'Publisher {publisher_name} was not found, registered new one...')
+            self.register_publisher(publisher_name, publisher_town)
+            publisherId = self.find_publisher(publisher_name, publisher_town)
+
+        if authors is None:
+            authorsId = [None]
+        else:
+            authorsId = []
+            for i in authors:
+                authorId = self.find_author(i)
+                if authorId is None:
+                    print(f'Author {i} was not found, registered new one...')
+                    self.register_author(i)
+                    authorId = self.find_author(i)
+                authorsId.append(authorId[0])
+
+        if genres is None:
+            genresId = [None]
+        else:
+            genresId = []
+            for i in genres:
+                genreId = self.find_genre(i)
+                if genreId is None:
+                    print(f'Genre {i} was not found, registered new one...')
+                    self.register_genre(i)
+                    genreId = self.find_genre(i)
+                genresId.append(genreId[0])
+
+        subjectId = self.find_subject(subject)
+        if subjectId is None:
+            print(f'Subject {subject} was not found, registered new one...')
+            self.register_subject(subject)
+            subjectId = self.find_subject(subject)
+
+        self.update_book(bookId, name, year, publisherId[0], pages, subjectId[0], UDK, BBK, ISBN, authorMark)
+
+        authorsId = self.filter_book_new_authors(bookId, authorsId)
+        self.weld_author_book(authorsId, bookId)
+        genresId = self.filter_book_new_genres(bookId, genresId)
+        self.weld_genre_book(genresId, bookId)
 
     def delete_book_deep(self, bookId):
         """
@@ -507,6 +609,7 @@ class DataBase:
         
         self.delete_book(bookId)
         self.delete_book_author(bookId)
+        self.delete_book_genre(bookId)
 
         exemplars = self.get_exemplar_list_raw(bookId)
         for i in exemplars:
@@ -1140,11 +1243,26 @@ if __name__ == '__main__':
     # test.give_book(20, 1248, 10
     # test.add_time_to_takeout(1248, 2)
     # test.take_book(20, 1268)
+    # def add_book(self, name, year, publisher_name,
+    #             publisher_town, pages, subject, genres,
+    #             authors, UDK, BBK, ISBN, authorMark):
+    # update_book(self, bookId, name, year, publisherId, pages, subjectId, UDK, BBK, ISBN, authorMark):
+    
+    # test.delete_book_deep(0)
+
     # test.add_book('Physics 10 garde', 2001, 'Питер', 'москва', 200, 'physics',
     #     ['study','study2','study3'],
     #     ['zxczxc dasd xcvx','zhhxczxc dassdd xggdcvx','zxffczxc dassdd xcvx'],
     #     '121kbf12l', '23780=-+-[]:врловл', '23798-231-1231-11', 'К48'
     # )
+    # book_id = test.get_last_id()
+    # test.update_book_full(12073, 'Physics 11 garde', 2001, 'Питер', 'москва', 200, 'physics',
+    #     ['study','study5','study4'],
+    #     ['zxczxc dasd xcvx','zhhxczxc dassdd xggdcvx','zxffczxc dassdd xcvx'],
+    #     '121kbf12l', '23780=-+-[]:врловл', '23798-231-1231-11', 'К48'
+    # )
+
+
     # for i in test.get_reader_by_name('A'):
         # print(i)
     # print(test.get_book_info(1))
