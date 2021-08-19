@@ -460,7 +460,6 @@ class DataBase:
         return self.c.fetchone()[0]
 
     def weld_author_book(self, authorsId, bookId):
-        # print([(i, bookId) for i in authorsId])
         self.c.executemany("""
             INSERT INTO author_book (authorId, bookId)
             VALUES (?, ?)

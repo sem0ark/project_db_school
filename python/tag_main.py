@@ -7,6 +7,7 @@ from validate import Validate_process
 import UI.ui_main_12           as ui_main
 import UI.ui_reg_user_3       as ui_reg_user
 import UI.ui_reg_book_3       as ui_reg_book
+import UI.ui_upd_book_1       as ui_upd_book
 import UI.ui_give_book_3      as ui_give_book
 import UI.ui_take_book_4      as ui_take_book
 import UI.ui_reg_exemplar_5   as ui_reg_exemplar
@@ -73,12 +74,71 @@ class tag_Ui_MainWindow(ui_main.Ui_MainWindow):
         return TableModel(data, head)
 
     def handle_registerBookAction(self):
-        # self.reconnect(self.searchButton.clicked, self.null_search)
-        #print('handle_registerBookAction triggered')
         RegisterBook = QtWidgets.QDialog()
         ui = ui_reg_book.Ui_RegisterBook()
         ui.setupUi(RegisterBook)
         RegisterBook.show()
+        if RegisterBook.exec_() == RegisterBook.Accepted:
+            year = ui.lineEdit_year.text()
+            pages = ui.lineEdit_pages.text()
+            name = ui.lineEdit_name.text()
+            subject = ui.lineEdit_subject.text()
+            publisher_name = ui.lineEdit_publisherName.text()
+            publisher_town = ui.lineEdit_publisherTown.text()
+            authors = ui.lineEdit_authors.text()
+            genres = ui.lineEdit_genres.text()
+            UDK = ui.lineEdit_UDK.text()
+            BBK = ui.lineEdit_BBK.text()
+            ISBN = ui.lineEdit_ISBN.text()
+            authorMark = ui.lineEdit_authorMark.text()
+
+            genres = Validate_process.val_no_text(genres)
+            if genres:
+                genres  = list(map(Validate_process.val_strip_lower_text, genres.split(',')))
+
+            authors = Validate_process.val_no_text(authors)
+            if authors:
+                authors = list(map(Validate_process.val_strip_cap_text, authors.split(',')))
+
+            name = Validate_process.strip_text(name)
+            subject = Validate_process.val_strip_lower_text(subject)
+            publisher_name = Validate_process.val_strip_cap_text(publisher_name)
+            publisher_town = Validate_process.strip_text(publisher_town)
+            UDK = Validate_process.strip_text(UDK)
+            BBK = Validate_process.strip_text(BBK)
+            ISBN = Validate_process.strip_text(ISBN)
+            authorMark = Validate_process.strip_text(authorMark)
+
+            name = Validate_process.val_no_text(name)
+            if name is None:
+                self.illegal_input_info('название книги')
+                return None
+            year = Validate_process.val_integer(year)
+            #print(year)
+            if year == -1:
+                self.illegal_input_info('год')
+                return None
+            pages = Validate_process.val_integer(pages)
+            if pages == -1:
+                self.illegal_input_info('кол-во страниц')
+                return None
+
+            reg_id = self.pr.register_book(name, year, publisher_name,
+                                        publisher_town, pages, subject,
+                                        genres, authors, UDK, BBK, ISBN, authorMark)
+            self.reg_id_info('книга', reg_id)
+
+            self.handle_alfabeticalNameListAction()
+            self.name_search()
+        else:
+            return None
+
+    def handle_updateBookAction(self):
+        RegisterBook = QtWidgets.QDialog()
+        ui = ui_reg_book.Ui_RegisterBook()
+        ui.setupUi(RegisterBook)
+        RegisterBook.show()
+
         if RegisterBook.exec_() == RegisterBook.Accepted:
             year = ui.lineEdit_year.text()
             pages = ui.lineEdit_pages.text()
@@ -497,6 +557,7 @@ class tag_Ui_MainWindow(ui_main.Ui_MainWindow):
         if exemplarID is None:
             return None
         self.pr.delete_exemplar(exemplarID)
+        self.del_id_info('экземпляр', bookID)
         return None
 
     def handle_deleteUserAction(self):
@@ -504,6 +565,7 @@ class tag_Ui_MainWindow(ui_main.Ui_MainWindow):
         if userID is None:
             return None
         self.pr.delete_user(userID)
+        self.del_id_info('пользователь', bookID)
         return None
 
     def handle_deleteBookAction(self):
@@ -511,6 +573,7 @@ class tag_Ui_MainWindow(ui_main.Ui_MainWindow):
         if bookID is None:
             return None
         self.pr.delete_book(bookID)
+        self.del_id_info('книга', bookID)
         return None
 
     def handle_bookInfoAction(self):
@@ -782,7 +845,7 @@ class tag_Ui_MainWindow(ui_main.Ui_MainWindow):
         window = QtWidgets.QWidget()
         msgBox = QtWidgets.QMessageBox()
         msgBox.setIcon(QtWidgets.QMessageBox.Information)
-        msgBox.setText('Неверный ввод: ' + text)
+        msgBox.setText(f'Неверный ввод: "{text}"')
         msgBox.setWindowTitle('Неверный ввод')
         msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
         msgBox.exec_()
@@ -823,6 +886,15 @@ class tag_Ui_MainWindow(ui_main.Ui_MainWindow):
         msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
         msgBox.exec_()
 
+    def del_id_info(self, name, i):
+        window = QtWidgets.QWidget()
+        msgBox = QtWidgets.QMessageBox()
+        msgBox.setIcon(QtWidgets.QMessageBox.Information)
+        msgBox.setText(name.capitalize() + ' с ID: ' + str(i) + ' удал.')
+        msgBox.setWindowTitle('Удаление успешно')
+        msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+        msgBox.exec_()
+
     def integer_input(self, windowTitle, infoText):
         window = QtWidgets.QWidget()
         text, ok = QtWidgets.QInputDialog.getText(window, windowTitle, infoText)
@@ -831,7 +903,7 @@ class tag_Ui_MainWindow(ui_main.Ui_MainWindow):
                 text = int(text)
                 return text
             except ValueError:
-                self.info_text('Info', 'Неверный ввод')
+                self.info_text('Неверный ввод', f'Неверный ввод: "{text}"')
         return None
 
     def closeEvent(self, event):

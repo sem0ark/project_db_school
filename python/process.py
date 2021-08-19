@@ -19,6 +19,15 @@ class Process_signal(object):
         # return self.db.c.find_book(name, year, pages, UDK, BBK, ISBN, authorMark)
         return self.db.get_last_id()
 
+    def update_book(
+                    self, bookId, name, year, publisher_name,
+                    publisher_town, pages, subject,
+                    genres, authors, UDK, BBK, ISBN, authorMark):
+        self.db.update_book_full(name, year, publisher_name,
+                                publisher_town, pages, subject,
+                                genres, authors, UDK, BBK, ISBN, authorMark)
+        return bookId
+
     def delete_book(self, bookId):
         self.db.delete_book_deep(bookId)
 
