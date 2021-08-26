@@ -1,5 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
+import os
 
 from process import Process_signal
 from validate import Validate_process
@@ -673,12 +674,12 @@ class tag_Ui_MainWindow(QtWidgets.QWidget, ui_main.Ui_MainWindow):
         return None
 
     def handle_exportBooksAction(self):
-        self.saveFileDialog('Экспортировать список книг')
-
-        # self.pr.export_books()
+        file_path = self.saveFileDialog('Экспортировать список книг')
+        self.pr.export_books(file_path)
 
     def handle_exportUsersAction(self):
-        self.pr.export_users()
+        file_path = self.saveFileDialog('Экспортировать список пользователей')
+        self.pr.export_users(file_path)
 
     def null_search(self):
         pass
@@ -979,8 +980,12 @@ class tag_Ui_MainWindow(QtWidgets.QWidget, ui_main.Ui_MainWindow):
     def saveFileDialog(self, windowTitle):
         options = QtWidgets.QFileDialog.Options()
         options |= QtWidgets.QFileDialog.DontUseNativeDialog
-        fileName, t = QtWidgets.QFileDialog.getSaveFileName(self, windowTitle, "","*;;*.xlsx", options=options)
-        print(fileName, t)
+        file_path, extention_type = QtWidgets.QFileDialog.getSaveFileName(self, windowTitle, "","*;;*.xlsx", options=options)
+        
+        if os.path.splitext(file_path)[1] == '':
+            file_path = ''.join((file_path, extention_type[1:]))
+
+        return file_path
 
     def closeEvent(self, event):
         close = QtWidgets.QMessageBox()

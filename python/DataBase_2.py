@@ -1175,7 +1175,7 @@ class DataBase:
         self.c.execute("DROP TABLE IF EXISTS book")
         self.db.commit()
 
-    def export_books(self):
+    def export_books(self, file_path):
         self.c.execute("""
             SELECT id
             FROM book
@@ -1217,9 +1217,9 @@ class DataBase:
                 '; '.join(info['authors']),
             ])
 
-        wb.save('books.xlsx')
+        wb.save(file_path)
 
-    def export_readers(self):
+    def export_readers(self, file_path):
         self.c.execute("""
             SELECT id
             FROM reader
@@ -1238,7 +1238,7 @@ class DataBase:
 
 
         for (i,) in self.c.fetchall():
-            info = self.get_user_info(i)
+            info = self.get_reader_info(i)
             ws.append([
                 info['id'],
                 info['fName'],
@@ -1247,7 +1247,7 @@ class DataBase:
                 info['regDate'],
             ])
 
-        wb.save('readers.xlsx')
+        wb.save(file_path)
 
 if __name__ == '__main__':
     test = DataBase()
@@ -1283,7 +1283,7 @@ if __name__ == '__main__':
     # for i in test.get_reader_by_name('A'):
         # print(i)
     # print(test.get_book_info(1))
-    # print(test.get_user_info(2))
+    # print(test.get_reader_info(2))
     # print(test.get_exemplar_info(2))
     # def get_book_syst_genre(self, text, tagSearch, tagSort, tagAsc):
     # print(test.get_book_syst_genre('genre', 'genre', 'id', 'asc'))

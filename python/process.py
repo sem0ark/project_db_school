@@ -81,11 +81,11 @@ class Process_signal(object):
     def get_all_exempalr_list(self):
         return self.db.get_all_exemplars()
 
-    def export_books(self):
-        self.db.export_books()
+    def export_books(self, file_path):
+        self.db.export_books(file_path)
 
-    def export_users(self):
-        self.db.export_readers()
+    def export_users(self, file_path):
+        self.db.export_readers(file_path)
     
 
     def close(self):
