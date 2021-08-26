@@ -29,7 +29,7 @@ class Process_signal(object):
         return bookId
 
     def update_user(self, readerId, fName, sName, pName):
-        self.pr.update_reader(readerId, fName, sName, pName)
+        self.db.update_reader(readerId, fName, sName, pName)
 
     def delete_book(self, bookId):
         self.db.delete_book_deep(bookId)

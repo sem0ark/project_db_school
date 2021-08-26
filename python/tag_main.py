@@ -18,7 +18,7 @@ import UI.ui_exemplar_info_4   as ui_exemplar_info
 import UI.ui_add_time_3   as ui_add_time
 
 
-class tag_Ui_MainWindow(ui_main.Ui_MainWindow):
+class tag_Ui_MainWindow(QtWidgets.QWidget, ui_main.Ui_MainWindow):
 
     def setupUi(self, MainWindow, process, ctx):
         super().setupUi(MainWindow, ctx)
@@ -252,25 +252,15 @@ class tag_Ui_MainWindow(ui_main.Ui_MainWindow):
         if userID is None:
             return None
 
-        answer = {
-            'id': a[0],
-            'fName': a[1],
-            'sName': a[2],
-            'pName': a[3],
-            'regDate': a[4],
-            'readingNormal': [],
-            'readingTimeOut': []
-        }
-
-        info = self.pr.get_book_info(bookID)
+        info = self.pr.get_user_info(userID)
 
         info_fName = info['fName']
         info_sName = info['sName']
         info_pName = info['pName']
-        
+
         UpdateReader = QtWidgets.QDialog()
         ui = ui_upd_user.Ui_UpdateReader()
-        ui.setupUi(UpdateReader)
+        ui.setupUi(UpdateReader, info_fName, info_sName, info_pName)
         UpdateReader.show()
         if UpdateReader.exec_() == UpdateReader.Accepted:
             fName = ui.lineEdit_fName.text()
@@ -683,7 +673,9 @@ class tag_Ui_MainWindow(ui_main.Ui_MainWindow):
         return None
 
     def handle_exportBooksAction(self):
-        self.pr.export_books()
+        self.saveFileDialog('Экспортировать список книг')
+
+        # self.pr.export_books()
 
     def handle_exportUsersAction(self):
         self.pr.export_users()
@@ -959,7 +951,7 @@ class tag_Ui_MainWindow(ui_main.Ui_MainWindow):
         window = QtWidgets.QWidget()
         msgBox = QtWidgets.QMessageBox()
         msgBox.setIcon(QtWidgets.QMessageBox.Information)
-        msgBox.setText(name.capitalize() + ' c ID: ' + str(i) + 'обнов.')
+        msgBox.setText(name.capitalize() + ' c ID: ' + str(i) + ' обнов.')
         msgBox.setWindowTitle('Обновление успешно')
         msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
         msgBox.exec_()
@@ -983,6 +975,12 @@ class tag_Ui_MainWindow(ui_main.Ui_MainWindow):
             except ValueError:
                 self.info_text('Неверный ввод', f'Неверный ввод: "{text}"')
         return None
+
+    def saveFileDialog(self, windowTitle):
+        options = QtWidgets.QFileDialog.Options()
+        options |= QtWidgets.QFileDialog.DontUseNativeDialog
+        fileName, t = QtWidgets.QFileDialog.getSaveFileName(self, windowTitle, "","*;;*.xlsx", options=options)
+        print(fileName, t)
 
     def closeEvent(self, event):
         close = QtWidgets.QMessageBox()

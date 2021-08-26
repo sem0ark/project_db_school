@@ -7,7 +7,7 @@ import tag_main
 from app_context import AppContext
 
 if __name__ == '__main__':
-    appctxt = AppContext()       # 1. Instantiate ApplicationContext
+    appctxt = AppContext()           # 1. Instantiate ApplicationContext
     tag_main.main(appctxt)
-    exit_code = appctxt.app.exec_()      # 2. Invoke appctxt.app.exec_()
+    exit_code = appctxt.app.exec_()  # 2. Invoke appctxt.app.exec_()
     sys.exit(exit_code)
