@@ -37,7 +37,7 @@ class tag_Ui_MainWindow(QtWidgets.QWidget, ui_main.Ui_MainWindow):
         self.table.setFont(font)
         self.table.setModel(self.create_table_model())
         self.verticalLayout_2.addWidget(self.table)        
-        self.pr = process()
+        self.pr = Process_signal()
 
     def tag_all(self):
         self.registerBookAction.triggered.connect(self.handle_registerBookAction)
@@ -154,7 +154,7 @@ class tag_Ui_MainWindow(QtWidgets.QWidget, ui_main.Ui_MainWindow):
         info_authorMark = info['authorMark']
 
         RegisterBook = QtWidgets.QDialog()
-        ui = ui_reg_book.Ui_RegisterBook()
+        ui = ui_upd_book.Ui_UpdateBook()
         ui.setupUi(RegisterBook,
                 info_name, info_year, info_publisher_name, info_publisher_town, info_pages, info_subject,
                 info_genres, info_authors, info_UDK, info_BBK, info_ISBN, info_authorMark)

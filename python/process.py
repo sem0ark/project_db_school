@@ -1,7 +1,7 @@
 import DataBase_2 as data
 
 class Process_signal(object):
-    def __init__(self,):
+    def __init__(self):
         self.db = data.DataBase()
 
     def register_user(self, fName, sName, pName):
@@ -9,21 +9,19 @@ class Process_signal(object):
         # return self.db.find_last_reader(fName, sName, pName)
         return self.db.get_last_id()
 
-    def register_book(
-                    self, name, year, publisher_name,
-                    publisher_town, pages, subject,
-                    genres, authors, UDK, BBK, ISBN, authorMark):
+    def register_book(self, name, year, publisher_name,
+                      publisher_town, pages, subject,
+                      genres, authors, UDK, BBK, ISBN, authorMark):
         self.db.add_book(name, year, publisher_name,
                     publisher_town, pages, subject,
                     genres, authors, UDK, BBK, ISBN, authorMark)
         # return self.db.c.find_book(name, year, pages, UDK, BBK, ISBN, authorMark)
         return self.db.get_last_id()
 
-    def update_book(
-                    self, bookId, name, year, publisher_name,
+    def update_book(self, bookId, name, year, publisher_name,
                     publisher_town, pages, subject,
                     genres, authors, UDK, BBK, ISBN, authorMark):
-        self.db.update_book_full(name, year, publisher_name,
+        self.db.update_book_full(bookId, name, year, publisher_name,
                                 publisher_town, pages, subject,
                                 genres, authors, UDK, BBK, ISBN, authorMark)
         return bookId
