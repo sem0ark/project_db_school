@@ -85,7 +85,7 @@ class Ui_UpdateReader(object):
 
     def retranslateUi(self, UpdateReader):
         _translate = QtCore.QCoreApplication.translate
-        UpdateReader.setWindowTitle(_translate("UpdateReader", "Зарег. пользователя"))
+        UpdateReader.setWindowTitle(_translate("UpdateReader", "Обновить пользователя"))
         self.surname.setText(_translate("UpdateReader", "Фамилия"))
         self.lineEdit_sName.setToolTip(_translate("UpdateReader", "<html><head/><body><p><span style=\" font-size:8pt;\">Введите фамилию пользователя (ученика)</span></p></body></html>"))
         self.first_name.setText(_translate("UpdateReader", "Имя"))

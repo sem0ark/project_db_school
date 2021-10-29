@@ -625,7 +625,7 @@ class tag_Ui_MainWindow(QtWidgets.QWidget, ui_main.Ui_MainWindow):
         if userID is None:
             return None
         self.pr.delete_user(userID)
-        self.del_id_info('пользователь', bookID)
+        self.del_id_info('пользователь', userID)
         return None
 
     def handle_deleteBookAction(self):
@@ -675,11 +675,13 @@ class tag_Ui_MainWindow(QtWidgets.QWidget, ui_main.Ui_MainWindow):
 
     def handle_exportBooksAction(self):
         file_path = self.saveFileDialog('Экспортировать список книг')
-        self.pr.export_books(file_path)
+        if file_path != '':
+            self.pr.export_books(file_path)
 
     def handle_exportUsersAction(self):
         file_path = self.saveFileDialog('Экспортировать список пользователей')
-        self.pr.export_users(file_path)
+        if file_path != '':
+            self.pr.export_users(file_path)
 
     def null_search(self):
         pass

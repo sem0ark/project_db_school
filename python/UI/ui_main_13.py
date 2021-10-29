@@ -235,6 +235,7 @@ class Ui_MainWindow(object):
         self.subjectListAction.setText(_translate("MainWindow", "Сист. каталог"))
         self.userListAction.setText(_translate("MainWindow", "Список пользователей"))
         self.registerExemplarAction.setText(_translate("MainWindow", "Зарег. экземпляр"))
+        self.registerExemplarAction.setShortcut(_translate("MainWindow", "Ctrl+E"))
         self.givenBookListAction.setText(_translate("MainWindow", "Список выд. экземпляров"))
         self.userInfoAction.setText(_translate("MainWindow", "Инф. о пользователе"))
         self.bookInfoAction.setText(_translate("MainWindow", "Информация о книге"))

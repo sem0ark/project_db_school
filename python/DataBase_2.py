@@ -638,7 +638,7 @@ class DataBase:
         """
         
         self.delete_exemplar(exemplarId)
-        self.delete_exemplar_history(bookId)
+        self.delete_exemplar_history(exemplarId)
 
     def delete_reader_deep(self, readerId):
         """
